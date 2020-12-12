@@ -1,7 +1,44 @@
+#include <avr/io.h>
+#include <util/delay.h>
+#include <avr/pgmspace.h>
+#include <limits.h>
+#include <stdint.h>
+
 #include "ili9341.h"
 
-volatile uint16_t LCD_W=ILI9341_TFTWIDTH;
-volatile uint16_t LCD_H=ILI9341_TFTHEIGHT;
+#define controlport PORTB
+#define controlddr DDRB
+#define controlpin PINB
+#define rstport PORTB
+#define rstddr DDRB
+#define rstpin PINB
+
+#define cs 2
+#define dc 1
+#define rst 0
+
+#define BLACK       0x0000      
+#define NAVY        0x000F      
+#define DARKGREEN   0x03E0      
+#define DARKCYAN    0x03EF      
+#define MAROON      0x7800      
+#define PURPLE      0x780F      
+#define OLIVE       0x7BE0      
+#define LIGHTGREY   0xC618      
+#define DARKGREY    0x7BEF      
+#define BLUE        0x001F      
+#define GREEN       0x07E0      
+#define CYAN        0x07FF      
+#define RED         0xF800     
+#define MAGENTA     0xF81F      
+#define YELLOW      0xFFE0      
+#define WHITE       0xFFFF      
+#define ORANGE      0xFD20      
+#define GREENYELLOW 0xAFE5     
+#define PINK        0xF81F
+
+volatile uint16_t LCD_W=320;
+volatile uint16_t LCD_H=240;
 
 void ili9341_hard_init(void)//init hardware
 {
@@ -342,4 +379,16 @@ void ili9341_setRotation(uint8_t m)
 			LCD_H = 240;
 			break;
 	}
+}
+
+void ili9341_backlight_on(void)
+{
+	DDRD  |= (1<< PD6);
+	PORTD |= (1 << PD6);
+}
+
+void ili9341_backlight_off(void)
+{
+	DDRD  |= (1<< PD6);
+	PORTD &= ~(1 << PD6);
 }

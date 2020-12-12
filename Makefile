@@ -6,6 +6,8 @@ SRC+=ili9341gfx.c
 SRC+=bmp280/bmp280.c
 SRC+=DHT/dht.c
 SRC+=i2chw/twimaster.c
+SRC+=display.c
+SRC+=sensors.c
 
 OBJ+=main.o
 OBJ+=ili9341.o
@@ -13,6 +15,8 @@ OBJ+=ili9341gfx.o
 OBJ+=bmp280.o
 OBJ+=dht.o
 OBJ+=twimaster.o
+OBJ+=display.o
+OBJ+=sensors.o
 
 MCU=atmega328p
 AVRDUDE_MCU=atmega328p

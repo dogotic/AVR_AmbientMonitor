@@ -1,3 +1,9 @@
+#include <avr/io.h>
+#include <avr/pgmspace.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <inttypes.h>
+
 #include "ili9341.h"
 #include "ili9341gfx.h"
 
@@ -8,9 +14,7 @@ volatile uint16_t textbgcolour;
 volatile uint8_t textsize;
 uint16_t vsetx,vsety,vactualx,vactualy,isetx,isety,iactualx,iactualy;
 
-static FILE mydata = FDEV_SETUP_STREAM(ili9341_putchar_printf, NULL, _FDEV_SETUP_WRITE);//mydata declaration and converting it into stream
-
-int16_t ili9341_putchar_printf(char var, FILE *stream)//this function will be called whenever printf is used
+int16_t ili9341_putchar_printf(char var)//this function will be called whenever printf is used
 {
 	ili9341_write(var);
 	return 0;
