@@ -28,7 +28,7 @@
 
 // TODO: there can be two BMP280 sensors on the I2C bus, ids 0x76, 0x77.
 // Currently we support only one sensor for the sake of simplicity
-#define BMP280_ADDR	0x77	// can be 0x77 or 0x76
+#define BMP280_ADDR	0x76	// can be 0x77 or 0x76
 
 #define BMP280_I2CINIT		// comment out if called from somewhere else
 

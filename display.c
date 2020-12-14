@@ -17,13 +17,6 @@
 #include "ili9341gfx.h"
 #include "display.h"
 
-/**
- * @brief Initialize display with the given orientation
- *        and color 
- * 
- * @param orientation - orientation of the display
- * @param color - color of the display
- */
 void DISPLAY_Init(uint8_t orientation, uint16_t color)
 {
 	ili9341_init(); //initial driver setup to drive ili9341
@@ -34,16 +27,6 @@ void DISPLAY_Init(uint8_t orientation, uint16_t color)
     ili9341_backlight_on();
 }
 
-/**
- * @brief 
- * 
- * @param x 
- * @param y 
- * @param text_size 
- * @param text 
- * @param bg_color 
- * @param fg_color 
- */
 void DISPLAY_Text(uint16_t x, 
                   uint16_t y, 
                   uint8_t text_size, 
@@ -62,14 +45,6 @@ void DISPLAY_Text(uint16_t x,
     }
 }
 
-/**
- * @brief 
- * 
- * @param x 
- * @param y 
- * @param length 
- * @param color 
- */
 void DISPLAY_DrawHorizontalLine(uint16_t x, 
                                 uint16_t y,
                                 uint16_t length, 

@@ -40,9 +40,6 @@ int main()
 
 		sprintf(output_str,"%d hPa",pressure);
 		DISPLAY_Text(30,170,4,output_str,YELLOW,BLACK);
-
-		sprintf(output_str,"%d m",altitude);
-		DISPLAY_Text(60,240,4,output_str,YELLOW,BLACK);				
 		
 		_delay_ms(1000);
 	}

@@ -18,11 +18,6 @@
 
 #include "sensors.h"
 
-/**
- * @brief 
- * 
- * @return sensors_status_t 
- */
 sensors_status_t SENSORS_Init()
 {
     int retval = 0;
@@ -39,22 +34,16 @@ sensors_status_t SENSORS_Init()
     
 }
 
-/**
- * @brief 
- * 
- * @param humidity 
- * @return sensors_status_t 
- */
 sensors_status_t SENSORS_ReadHumidity(uint8_t *humidity)
 {
     int temp, humid;
     int ec;
     //Request DHT sensor to give it time to prepare data
-    dhtxxconvert( DHTXX_DHT22, &PORTD, &DDRD, &PIND, ( 1 << 7 ) );
+    dhtxxconvert( DHTXX_DHT22, &PORTD, &DDRD, &PIND, ( 1 << PD3 ) );
     _delay_ms( 1000 );
 
     //Read data from sensor to variables `temp` and `humid` (`ec` is exit code)
-    ec = dhtxxread( DHTXX_DHT22, &PORTD, &DDRD, &PIND, ( 1 << 7 ), &temp, &humid );
+    ec = dhtxxread( DHTXX_DHT22, &PORTD, &DDRD, &PIND, ( 1 << PD3 ), &temp, &humid );
     
     if (ec != DHTXX_ERROR_OK)
     {
@@ -69,12 +58,6 @@ sensors_status_t SENSORS_ReadHumidity(uint8_t *humidity)
     return SENSORS_STATUS_OK;
 }
 
-/**
- * @brief 
- * 
- * @param temperature 
- * @return sensors_status_t 
- */
 sensors_status_t SENSORS_ReadTemperature(int8_t *temperature)
 {
     int temp, humid;
@@ -102,12 +85,6 @@ sensors_status_t SENSORS_ReadTemperature(int8_t *temperature)
     return SENSORS_STATUS_OK;
 }
 
-/**
- * @brief 
- * 
- * @param pressure 
- * @return sensors_status_t 
- */
 sensors_status_t SENSORS_ReadPressure(uint16_t *pressure)
 {
     int temperature,altitude;    
@@ -126,12 +103,6 @@ sensors_status_t SENSORS_ReadPressure(uint16_t *pressure)
 
 }
 
-/**
- * @brief 
- * 
- * @param altitude 
- * @return sensors_status_t 
- */
 sensors_status_t SENSORS_ReadAltitude(uint16_t *altitude)
 {
     int pressure,temperature;    
