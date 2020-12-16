@@ -90,4 +90,14 @@ sensors_status_t SENSORS_ReadPressure(uint16_t *pressure);
  */
 sensors_status_t SENSORS_ReadAltitude(uint16_t *altitude);
 
+/**
+ * @brief Function that returns the measuret light level from the LDR
+ * 
+ * @param light_level - light level measured from the LDR
+ * @return sensors_status_t - status of reading
+ *                          - SENSOR_STATUS_OK if reading was ok
+ *                          - Currently no other error is reported
+ */
+sensors_status_t SENSORS_ReadLightLevel(uint16_t *light_level);
+
 #endif

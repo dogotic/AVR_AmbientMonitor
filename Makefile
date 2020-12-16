@@ -8,6 +8,7 @@ SRC+=DHT/dht.c
 SRC+=i2chw/twimaster.c
 SRC+=display.c
 SRC+=sensors.c
+SRC+=adc.c
 
 OBJ+=main.o
 OBJ+=ili9341.o
@@ -17,6 +18,7 @@ OBJ+=dht.o
 OBJ+=twimaster.o
 OBJ+=display.o
 OBJ+=sensors.o
+OBJ+=adc.o
 
 MCU=atmega328p
 AVRDUDE_MCU=atmega328p

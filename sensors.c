@@ -15,6 +15,7 @@
 #include "i2chw/i2cmaster.h"
 #include "bmp280/bmp280.h"
 #include "DHT/dht.h"
+#include "adc.h"
 
 #include "sensors.h"
 
@@ -31,7 +32,8 @@ sensors_status_t SENSORS_Init()
     {
         return SENSORS_INIT_FAILED;
     }
-    
+
+    ADC_Init();
 }
 
 sensors_status_t SENSORS_ReadHumidity(uint8_t *humidity)
@@ -116,6 +118,17 @@ sensors_status_t SENSORS_ReadAltitude(uint16_t *altitude)
     // prevent compiler warning
     temperature = temperature;
     pressure = pressure;
+
+    return SENSORS_STATUS_OK;
+}
+
+sensors_status_t SENSORS_ReadLightLevel(uint16_t *light_level)
+{
+    uint16_t adc_level;
+
+    adc_level = ADC_Read_Avg(7,4);
+
+    *light_level = adc_level;
 
     return SENSORS_STATUS_OK;
 }
