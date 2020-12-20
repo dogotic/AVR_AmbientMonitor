@@ -20,11 +20,8 @@
 void DISPLAY_Init(uint8_t orientation, uint16_t color)
 {
 	ili9341_init(); //initial driver setup to drive ili9341
-	ili9341_clear(color); //fill screen with black colour
 	ili9341_setRotation(orientation); //rotate screen
-
-    // set backlight on
-    ili9341_backlight_on();
+	ili9341_clear(color); //fill screen with black colour
 }
 
 void DISPLAY_Text(uint16_t x, 
@@ -37,6 +34,7 @@ void DISPLAY_Text(uint16_t x,
 	ili9341_setcursor(x,y);
 	ili9341_settextcolour(fg_color,bg_color);
 	ili9341_settextsize(text_size);
+    ili9341_backlight_on();
 
     while(*text)
     {

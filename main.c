@@ -5,71 +5,47 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
+#include "uart.h"
 #include "display.h"
 #include "sensors.h"
+
+#include "ili9341gfx.h"
+#include "ili9341.h"
+
+static FILE mystdout = FDEV_SETUP_STREAM(USART_Transmit, NULL,
+										 _FDEV_SETUP_WRITE);
 
 int main()
 {
 	uint16_t bg_color = BLACK;
-	uint16_t fg_color = YELLOW;
-	bool is_daytime = true;
+	uint16_t fg_color = GREENYELLOW;
 
-	DISPLAY_Init(2,bg_color);
+	DISPLAY_Init(0,BLACK);
+
+
+	USART_Init(9600);
 	SENSORS_Init();
+	stdout = &mystdout;
 
-	DISPLAY_DrawHorizontalLine(0,70,240,fg_color);
-	DISPLAY_DrawHorizontalLine(0,140,240,fg_color);
-	DISPLAY_DrawHorizontalLine(0,210,240,fg_color);
+	printf("Starting Sensor Monitor\r\n");
 
 	while (1)
 	{
-		int8_t temperature; 
-		uint8_t humidity;
-		uint16_t pressure;
-		uint16_t altitude;
+		uint8_t 	humidity;
+		int8_t 		temperature;
 		char output_str[32];
-		uint16_t light_level;
-		
+
 		SENSORS_ReadTemperature(&temperature);
 		SENSORS_ReadHumidity(&humidity);
-		SENSORS_ReadPressure(&pressure);
-		SENSORS_ReadAltitude(&altitude);
-		SENSORS_ReadLightLevel(&light_level);
 
-		if (light_level <= 50)
-		{
-			if (!is_daytime)
-			{
-				bg_color = LIGHTGREY;
-				fg_color = BLACK;
-				DISPLAY_DrawHorizontalLine(0,70,240,fg_color);
-				DISPLAY_DrawHorizontalLine(0,140,240,fg_color);
-				DISPLAY_DrawHorizontalLine(0,210,240,fg_color);			
-			}
-		}
-		else if(light_level >= 100)
-		{
-			if (is_daytime)
-			{
-				bg_color = BLACK;
-				fg_color = YELLOW;			
-				DISPLAY_DrawHorizontalLine(0,70,240,fg_color);
-				DISPLAY_DrawHorizontalLine(0,140,240,fg_color);
-				DISPLAY_DrawHorizontalLine(0,210,240,fg_color);			
-			}
-		}
-		
-		
 		sprintf(output_str,"%d C",temperature);
-		DISPLAY_Text(70,30,4,output_str,fg_color,bg_color);
+		DISPLAY_Text(20,30,8,output_str,fg_color,bg_color);
 		
 		sprintf(output_str,"%d %%",humidity);
-		DISPLAY_Text(70,100,4,output_str,fg_color,bg_color);
+ 		DISPLAY_Text(20,140,8,output_str,fg_color,bg_color);
 
-		sprintf(output_str,"%d hPa",pressure);
-		DISPLAY_Text(30,170,4,output_str,fg_color,bg_color);
-		
-		sprintf(output_str,"%d ",light_level);
-		DISPLAY_Text(30,240,4,output_str,fg_color,bg_color);
+
+		sprintf(output_str,"1000 hPa",humidity);
+ 		DISPLAY_Text(5,250,5,output_str,fg_color,bg_color);
 	}
 }

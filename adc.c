@@ -1,59 +1,39 @@
+#include <stdint.h>
 #include <avr/io.h>
-
 #include "adc.h"
 
-// Diese Beispiel zeigt die Anwendung des ADC eines ATmega169
-// unter Verwendung der internen Referenzspannung von nominell 1,1V.
-// Zur Anpassung an andere AVR und/oder andere Referenzspannungen
-// siehe Erläuterungen in diesem Tutorial und im Datenblatt
+#define sbi(r,p) (r |= (1 << p))
+#define cbi(r,p) ( r &= ~(1 << p))
 
-/* ADC initialisieren */
 void ADC_Init(void)
 {
-    // die Versorgungsspannung AVcc als Referenz wählen:
-    ADMUX = (1 << REFS0);
-    // oder interne Referenzspannung als Referenz für den ADC wählen:
-    // ADMUX = (1<<REFS1) | (1<<REFS0);
-
-    // Bit ADFR ("free running") in ADCSRA steht beim Einschalten
-    // schon auf 0, also single conversion
-    ADCSRA = (1 << ADPS1) | (1 << ADPS0); // Frequenzvorteiler
-    ADCSRA |= (1 << ADEN);                // ADC aktivieren
-
-    /* nach Aktivieren des ADC wird ein "Dummy-Readout" empfohlen, man liest
-     also einen Wert und verwirft diesen, um den ADC "warmlaufen zu lassen" */
-
-    ADCSRA |= (1 << ADSC); // eine ADC-Wandlung
-    while (ADCSRA & (1 << ADSC))
-    { // auf Abschluss der Konvertierung warten
-    }
-    /* ADCW muss einmal gelesen werden, sonst wird Ergebnis der nächsten
-     Wandlung nicht übernommen. */
-    (void)ADCW;
+	sbi(ADCSRA, ADPS2);
+	sbi(ADCSRA, ADPS1);
+	cbi(ADCSRA, ADPS0);
+	sbi(ADCSRA, ADEN);
 }
 
-/* ADC Einzelmessung */
 uint16_t ADC_Read(uint8_t channel)
 {
-    // Kanal waehlen, ohne andere Bits zu beeinflußen
-    ADMUX = (ADMUX & ~(0x1F)) | (channel & 0x1F);
-    ADCSRA |= (1 << ADSC); // eine Wandlung "single conversion"
-    while (ADCSRA & (1 << ADSC))
-    { // auf Abschluss der Konvertierung warten
-    }
-    return ADCW; // ADC auslesen und zurückgeben
-}
+	uint8_t low, high;
 
-/* ADC Mehrfachmessung mit Mittelwertbbildung */
-/* beachte: Wertebereich der Summenvariablen */
-uint16_t ADC_Read_Avg(uint8_t channel, uint8_t nsamples)
-{
-    uint32_t sum = 0;
+	// AVCC is reference
+	ADMUX = (0x1 << 6) | (channel & 0x07);
 
-    for (uint8_t i = 0; i < nsamples; ++i)
-    {
-        sum += ADC_Read(channel);
-    }
+	// start the conversion
+	sbi(ADCSRA, ADSC);
 
-    return (uint16_t)(sum / nsamples);
+	// ADSC is cleared when the conversion finishes
+	while (bit_is_set(ADCSRA, ADSC));
+
+	// we have to read ADCL first; doing so locks both ADCL
+	// and ADCH until ADCH is read.  reading ADCL second would
+	// cause the results of each conversion to be discarded,
+	// as ADCL and ADCH would be locked when it completed.
+	low  = ADCL;
+	high = ADCH;
+
+
+	// combine the two bytes
+	return (high << 8) | low;
 }

@@ -17,100 +17,108 @@
 #define dc 1
 #define rst 0
 
-#define BLACK       0x0000      
-#define NAVY        0x000F      
-#define DARKGREEN   0x03E0      
-#define DARKCYAN    0x03EF      
-#define MAROON      0x7800      
-#define PURPLE      0x780F      
-#define OLIVE       0x7BE0      
-#define LIGHTGREY   0xC618      
-#define DARKGREY    0x7BEF      
-#define BLUE        0x001F      
-#define GREEN       0x07E0      
-#define CYAN        0x07FF      
-#define RED         0xF800     
-#define MAGENTA     0xF81F      
-#define YELLOW      0xFFE0      
-#define WHITE       0xFFFF      
-#define ORANGE      0xFD20      
-#define GREENYELLOW 0xAFE5     
-#define PINK        0xF81F
+#define BLACK 0x0000
+#define NAVY 0x000F
+#define DARKGREEN 0x03E0
+#define DARKCYAN 0x03EF
+#define MAROON 0x7800
+#define PURPLE 0x780F
+#define OLIVE 0x7BE0
+#define LIGHTGREY 0xC618
+#define DARKGREY 0x7BEF
+#define BLUE 0x001F
+#define GREEN 0x07E0
+#define CYAN 0x07FF
+#define RED 0xF800
+#define MAGENTA 0xF81F
+#define YELLOW 0xFFE0
+#define WHITE 0xFFFF
+#define ORANGE 0xFD20
+#define GREENYELLOW 0xAFE5
+#define PINK 0xF81F
 
-volatile uint16_t LCD_W=320;
-volatile uint16_t LCD_H=240;
+volatile uint16_t LCD_W = 320;
+volatile uint16_t LCD_H = 240;
 
-void ili9341_hard_init(void)//init hardware
+void ili9341_hard_init(void) //init hardware
 {
-	rstddr=0xFF;//output for reset
-	rstport |=(1<<rst);//pull high for normal operation
-	controlddr|=(1<<dc);//D/C as output
+	rstddr = 0xFF;			 //output for reset
+	rstport |= (1 << rst);	 //pull high for normal operation
+	controlddr |= (1 << dc); //D/C as output
 }
 
-void ili9341_spi_init(void)//set spi speed and settings 
+void ili9341_spi_init(void) //set spi speed and settings
 {
-	DDRB |=(1<<1)|(1<<2)|(1<<3)|(1<<5);//CS,SS,MOSI,SCK as output(although SS will be unused throughout the program)
-	SPCR=(1<<SPE)|(1<<MSTR);//mode 0,fosc/4
-	SPSR |=(1<<SPI2X);//doubling spi speed.i.e final spi speed-fosc/2
-	PORTB |=(1<<1);//cs off during startup
+	DDRB |= (1 << 1) | (1 << 2) | (1 << 3) | (1 << 5); //CS,SS,MOSI,SCK as output(although SS will be unused throughout the program)
+	SPCR = (1 << SPE) | (1 << MSTR);				   //mode 0,fosc/4
+	SPSR |= (1 << SPI2X);							   //doubling spi speed.i.e final spi speed-fosc/2
+	PORTB |= (1 << 1);								   //cs off during startup
 }
 
-void ili9341_spi_send(unsigned char spi_data)//send spi data to display
+void ili9341_spi_send(unsigned char spi_data) //send spi data to display
 {
-	SPDR=spi_data;//move data into spdr
-	while(!(SPSR & (1<<SPIF)));//wait till the transmission is finished
+	SPDR=spi_data;				//move data into spdr
+	while(!(SPSR & (1<<SPIF)));	//wait till the transmission is finished
 }
 
-void ili9341_writecommand8(uint8_t com)//command write
+void ili9341_writecommand8(uint8_t com) //command write
 {
-	controlport &=~((1<<dc)|(1<<cs));//dc and cs both low to send command
-	_delay_us(5);//little delay
+	controlport &= ~((1 << dc) | (1 << cs)); //dc and cs both low to send command
+	//_delay_us(1);//little delay
 	ili9341_spi_send(com);
-	controlport |=(1<<cs);//pull high cs
+	controlport |= (1 << cs); //pull high cs
 }
 
-void ili9341_writedata8(uint8_t data)//data write
+void ili9341_writedata8(uint8_t data) //data write
 {
-	controlport |=(1<<dc);//set dc high for data
-	_delay_us(1);//delay
-	controlport &=~(1<<cs);//set cs low for operation
+	controlport |= (1 << dc); //set dc high for data
+	//_delay_us(1);//delay
+	controlport &= ~(1 << cs); //set cs low for operation
 	ili9341_spi_send(data);
-	controlport |=(1<<cs);
+	controlport |= (1 << cs);
 }
 
-void ili9341_setaddress(uint16_t x1,uint16_t y1,uint16_t x2,uint16_t y2)//set coordinate for print or other function
+void ili9341_writedata16(uint16_t data)
+{
+	controlport |= (1 << dc); //set dc high for data
+	//_delay_us(1);//delay
+	controlport &= ~(1 << cs); //set cs low for operation
+	ili9341_spi_send(data >> 8);
+	ili9341_spi_send(data & 0xFF);
+	controlport |= (1 << cs);
+}
+
+void ili9341_setaddress(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) //set coordinate for print or other function
 {
 	ili9341_writecommand8(0x2A);
-	ili9341_writedata8(x1>>8);
-	ili9341_writedata8(x1);
-	ili9341_writedata8(x2>>8);
-	ili9341_writedata8(x2);
+
+	ili9341_writedata16(x1);
+	ili9341_writedata16(x2);
 
 	ili9341_writecommand8(0x2B);
-	ili9341_writedata8(y1>>8);
-	ili9341_writedata8(y1);
-	ili9341_writedata8(y2);
-	ili9341_writedata8(y2);
 
-	ili9341_writecommand8(0x2C);//meory write
+	ili9341_writedata16(y1);
+	ili9341_writedata16(y2);
+
+	ili9341_writecommand8(0x2C); //meory write
 }
 
-void ili9341_hard_reset(void)//hard reset display
+void ili9341_hard_reset(void) //hard reset display
 {
-	rstport |=(1<<rst);//pull high if low previously
+	rstport |= (1 << rst); //pull high if low previously
 	_delay_ms(200);
-	rstport &=~(1<<rst);//low for reset
+	rstport &= ~(1 << rst); //low for reset
 	_delay_ms(200);
-	rstport |=(1<<rst);//again pull high for normal operation
+	rstport |= (1 << rst); //again pull high for normal operation
 	_delay_ms(200);
 }
 
-void ili9341_init(void)//set up display using predefined command sequence
+void ili9341_init(void) //set up display using predefined command sequence
 {
 	ili9341_hard_init();
 	ili9341_spi_init();
 	ili9341_hard_reset();
-	ili9341_writecommand8(0x01);//soft reset
+	ili9341_writecommand8(0x01); //soft reset
 	_delay_ms(1000);
 
 	//power control A
@@ -239,56 +247,47 @@ void ili9341_init(void)//set up display using predefined command sequence
 //set colour for drawing
 void ili9341_pushcolour(uint16_t colour)
 {
-	ili9341_writedata8(colour>>8);
-	ili9341_writedata8(colour);
+	ili9341_writedata16(colour);
 }
 
 //clear lcd and fill with colour
 void ili9341_clear(uint16_t colour)
 {
 	uint32_t i;
-	ili9341_setaddress(0,0,LCD_W-1,LCD_H-1);
 
-	controlport |=(1<<dc);//set dc high for data
-	_delay_us(1);//delay
-
-	controlport &=~(1<<cs);//set cs low for operation
-
-	for (i=0; i<76800; i++)
+	ili9341_setaddress(0, 0, LCD_W - 1, LCD_H - 1);
+	for (i = 0; i < 76800; i++)
 	{
-		ili9341_spi_send(colour >> 8);
-		ili9341_spi_send(colour);
+		ili9341_writedata16(colour);
 	}
-	
-	controlport |=(1<<cs);	
 }
 
 //draw pixel
-void ili9341_drawpixel(uint16_t x3,uint16_t y3,uint16_t colour1) //pixels will always be counted from right side.x is representing LCD width which will always be less tha 240.Y is representing LCD height which will always be less than 320
+void ili9341_drawpixel(uint16_t x3, uint16_t y3, uint16_t colour1) //pixels will always be counted from right side.x is representing LCD width which will always be less tha 240.Y is representing LCD height which will always be less than 320
 {
-	if ((x3 < 0) ||(x3 >= LCD_W) || (y3 < 0) || (y3 >= LCD_H))
+	if ((x3 < 0) || (x3 >= LCD_W) || (y3 < 0) || (y3 >= LCD_H))
 	{
 		return;
 	}
 
-	ili9341_setaddress(x3,y3,x3+1,y3+1);
+	ili9341_setaddress(x3, y3, x3 + 1, y3 + 1);
 	ili9341_pushcolour(colour1);
 }
 
 //draw vertical line
-void ili9341_drawvline(uint16_t x,uint16_t y,uint16_t h,uint16_t colour)//basically we will see this line horizental if we see the display 320*240
+void ili9341_drawvline(uint16_t x, uint16_t y, uint16_t h, uint16_t colour) //basically we will see this line horizental if we see the display 320*240
 {
 	if ((x >= LCD_W) || (y >= LCD_H))
 	{
 		return;
 	}
 
-	if((y+h-1) >= LCD_H)
+	if ((y + h - 1) >= LCD_H)
 	{
-		h=LCD_H-y;
+		h = LCD_H - y;
 	}
 
-	ili9341_setaddress(x,y,x,y+h-1);
+	ili9341_setaddress(x, y, x, y + h - 1);
 
 	while (h--)
 	{
@@ -296,99 +295,101 @@ void ili9341_drawvline(uint16_t x,uint16_t y,uint16_t h,uint16_t colour)//basica
 	}
 }
 
-
 //draw horizental line
 
-void ili9341_drawhline(uint16_t x,uint16_t y,uint16_t w,uint16_t colour)
-{
-	if((x >=LCD_W) || (y >=LCD_H))
-	{
-		return;
-	}
-
-	if((x+w-1) >= LCD_W)
-	{
-		w=LCD_W-x;
-	}
-
-	ili9341_setaddress(x,y,x+w-1,y);
-
-	while(w--)
-	{
-		ili9341_pushcolour(colour);
-	}
-}
-
-
-//draw colour filled rectangle
-void ili9341_fillrect(uint16_t x,uint16_t y,uint16_t w,uint16_t h,uint16_t colour)
+void ili9341_drawhline(uint16_t x, uint16_t y, uint16_t w, uint16_t colour)
 {
 	if ((x >= LCD_W) || (y >= LCD_H))
 	{
 		return;
 	}
 
-	if ((x+w-1) >= LCD_W)
+	if ((x + w - 1) >= LCD_W)
 	{
-		w = LCD_W-x;
+		w = LCD_W - x;
 	}
 
-	if ((y+h-1) >= LCD_H)
+	ili9341_setaddress(x, y, x + w - 1, y);
+
+	while (w--)
 	{
-		h = LCD_H-y;
+		ili9341_pushcolour(colour);
+	}
+}
+
+//draw colour filled rectangle
+void ili9341_fillrect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t colour)
+{
+	if (x >= LCD_W)
+	{
+		x = LCD_W;
+	}
+	if (y >= LCD_H)
+	{
+		y = LCD_H;
 	}
 
-	ili9341_setaddress(x, y, x+w-1, y+h-1);
-
-	for(y=h; y>0; y--) 
+	if ((x + w - 1) >= LCD_W)
 	{
-		for(x=w; x>0; x--)
+		w = LCD_W - x;
+	}
+
+	if ((y + h - 1) >= LCD_H)
+	{
+		h = LCD_H - y;
+	}
+
+	ili9341_setaddress(x, y, x + w - 1, y + h - 1);
+
+	for (y = h; y > 0; y--)
+	{
+		for (x = w; x > 0; x--)
 		{
 			ili9341_pushcolour(colour);
 		}
 	}
 }
 //rotate screen at desired orientation
-void ili9341_setRotation(uint8_t m) 
+void ili9341_setRotation(uint8_t m)
 {
 	uint8_t rotation;
 
 	ili9341_writecommand8(0x36);
-	rotation=m%4;
+	rotation = m % 4;
 
-	switch (rotation) 
+	switch (rotation)
 	{
-		case 0:
-			ili9341_writedata8(0x40|0x08);
-			LCD_W = 240;
-			LCD_H = 320;
-			break;
-		case 1:
-			ili9341_writedata8(0x20|0x08);
-			LCD_W  = 320;
-			LCD_H = 240;
-			break;
-		case 2:
-			ili9341_writedata8(0x80|0x08);
-			LCD_W  = 240;
-			LCD_H = 320;
-			break;
-		case 3:
-			ili9341_writedata8(0x40|0x80|0x20|0x08);
-			LCD_W  = 320;
-			LCD_H = 240;
-			break;
+	case 0:
+		ili9341_writedata8(0x40 | 0x08);
+		LCD_W = 240;
+		LCD_H = 320;
+		break;
+	case 1:
+		ili9341_writedata8(0x20 | 0x08);
+		LCD_W = 320;
+		LCD_H = 240;
+		break;
+	case 2:
+		ili9341_writedata8(0x80 | 0x08);
+		LCD_W = 240;
+		LCD_H = 320;
+		break;
+	case 3:
+		ili9341_writedata8(0x40 | 0x80 | 0x20 | 0x08);
+		LCD_W = 320;
+		LCD_H = 240;
+		break;
 	}
 }
 
 void ili9341_backlight_on(void)
 {
-	DDRD  |= (1<< PD6);
+	DDRD |= (1 << PD6);
 	PORTD |= (1 << PD6);
 }
 
 void ili9341_backlight_off(void)
 {
-	DDRD  |= (1<< PD6);
+	DDRD |= (1 << PD6);
 	PORTD &= ~(1 << PD6);
 }
