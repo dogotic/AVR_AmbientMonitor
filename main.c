@@ -33,10 +33,12 @@ int main()
 	{
 		uint8_t 	humidity;
 		int8_t 		temperature;
+		uint16_t 	light_level;
 		char output_str[32];
 
 		SENSORS_ReadTemperature(&temperature);
 		SENSORS_ReadHumidity(&humidity);
+		SENSORS_ReadLightLevel(&light_level);
 
 		sprintf(output_str,"%d C",temperature);
 		DISPLAY_Text(20,30,8,output_str,fg_color,bg_color);
@@ -45,7 +47,7 @@ int main()
  		DISPLAY_Text(20,140,8,output_str,fg_color,bg_color);
 
 
-		sprintf(output_str,"1000 hPa",humidity);
+		sprintf(output_str,"%d",light_level);
  		DISPLAY_Text(5,250,5,output_str,fg_color,bg_color);
 	}
 }

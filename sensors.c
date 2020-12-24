@@ -12,8 +12,6 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-#include "i2chw/i2cmaster.h"
-#include "bmp280/bmp280.h"
 #include "DHT/dht.h"
 #include "adc.h"
 
@@ -89,7 +87,7 @@ sensors_status_t SENSORS_ReadLightLevel(uint16_t *light_level)
 {
     uint16_t adc_level;
 
-    adc_level = ADC_Read(7);
+    adc_level = ADC_Read(1);
 
     *light_level = adc_level;
 
