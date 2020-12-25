@@ -18,6 +18,9 @@ void ili9341_fillrect(uint16_t x,uint16_t y,uint16_t w,uint16_t h,uint16_t colou
 void ili9341_setRotation(uint8_t x);
 void ili9341_writedata16(uint16_t data);
 void ili9341_writeMultipleBytes(uint16_t data, uint16_t num);
+
 void ili9341_backlight_on(void);
 void ili9341_backlight_off(void);
+void ili9341_inverse_display(uint8_t inverse);
+
 #endif

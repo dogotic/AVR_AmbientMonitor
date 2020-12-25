@@ -24,7 +24,7 @@ AVRDUDE_PROGRAMMER=arduino
 
 CFLAGS=-Wall -Os -mmcu=$(MCU) -DUSE_LOGGING=1 -DF_CPU=8000000UL -std=gnu99
 LDFLAGS=
-AVRDUDE_FLAGS= -p$(AVRDUDE_MCU) -c $(AVRDUDE_PROGRAMMER) -P COM5 -b 57600
+AVRDUDE_FLAGS= -p$(AVRDUDE_MCU) -c $(AVRDUDE_PROGRAMMER) -P COM3 -b 57600
 
 hex:
 	avr-gcc -g -Os -mmcu=$(MCU) -c $(INC) $(SRC) $(CFLAGS)
@@ -36,3 +36,4 @@ clean:
 
 program_flash:
 	avrdude $(AVRDUDE_FLAGS) -U flash:w:$(BIN).hex:i
+	putty -load AVR

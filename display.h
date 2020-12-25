@@ -71,4 +71,16 @@ void DISPLAY_DrawHorizontalLine(uint16_t x,
                                 uint16_t length, 
                                 uint16_t color);
 
+/**
+ * @brief Invert Display Colors 
+ * 
+ */
+void DISPLAY_InvertColors_ON(void);
+
+/**
+ * @brief Disable Invert Display Colors 
+ * 
+ */
+void DISPLAY_InvertColors_OFF(void);
+
 #endif // DISPLAY_H

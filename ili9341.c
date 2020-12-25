@@ -3,6 +3,7 @@
 #include <avr/pgmspace.h>
 #include <limits.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #include "ili9341.h"
 
@@ -36,6 +37,9 @@
 #define ORANGE 0xFD20
 #define GREENYELLOW 0xAFE5
 #define PINK 0xF81F
+
+#define ILI9341_INVOFF 0x20   ///< Display Inversion OFF
+#define ILI9341_INVON 0x21    ///< Display Inversion ON
 
 volatile uint16_t LCD_W = 320;
 volatile uint16_t LCD_H = 240;
@@ -392,4 +396,17 @@ void ili9341_backlight_off(void)
 {
 	DDRD |= (1 << PD6);
 	PORTD &= ~(1 << PD6);
+}
+
+void ili9341_inverse_display(uint8_t inverse)
+{
+	if (inverse)
+	{
+		ili9341_writecommand8(ILI9341_INVON);
+	}
+	else
+	{
+		ili9341_writecommand8(ILI9341_INVOFF);
+	}
+	
 }

@@ -50,3 +50,13 @@ void DISPLAY_DrawHorizontalLine(uint16_t x,
 {
     ili9341_drawhline(x,y,length,color);
 }
+
+void DISPLAY_InvertColors_ON(void)
+{
+    ili9341_inverse_display(1);
+}
+
+void DISPLAY_InvertColors_OFF(void)
+{
+    ili9341_inverse_display(0);				
+}
