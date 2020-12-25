@@ -10,5 +10,5 @@ Compiler is AVR-GCC and firmware is developed using pure AVR-GCC (no arduino stu
 
 
 ## TO DO LIST
-[ ] Implement own I2C library and use bosch BMP280 library
-[ ] Implement better fonts for ILI9341, this now looks crappy
+- [ ] Implement own I2C library and use bosch BMP280 library
+- [ ] Implement better fonts for ILI9341, this now looks crappy
