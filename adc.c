@@ -1,3 +1,14 @@
+/**
+ * @file adc.c
+ * @author your name (you@domain.com)
+ * @brief 
+ * @version 0.1
+ * @date 2020-12-25
+ * 
+ * @copyright Copyright (c) 2020
+ * 
+ */
+
 #include <stdint.h>
 #include <avr/io.h>
 #include "adc.h"

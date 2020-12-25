@@ -28,7 +28,7 @@ int main()
 	uint16_t light_level;
 	char output_str[32];
 	uint16_t bg_color = BLACK;
-	uint16_t fg_color = GREENYELLOW;
+	uint16_t fg_color = LIGHTGREY;
 
 	DISPLAY_Init(0, BLACK);
 
