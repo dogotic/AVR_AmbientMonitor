@@ -10,4 +10,6 @@ Compiler is AVR-GCC and firmware is developed using pure AVR-GCC (no arduino stu
 
 
 ## TO DO LIST
-- [ ] Implement own I2C library and use bosch BMP280 library
+- [ ] Implement own I2C library and use bosch BMP280 library (preferably asynchronous)
+- [ ] Add documentation in Doxygen format
+- [ ] Add System Block Schematic for HW and SW
