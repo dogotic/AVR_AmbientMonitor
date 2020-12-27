@@ -19,8 +19,6 @@
 #include "display.h"
 #include "sensors.h"
 
-#include "ili9341.h"
-
 int main()
 {
 	uint8_t humidity;
@@ -31,28 +29,30 @@ int main()
 	uint16_t fg_color = LIGHTGREY;
 
 	DISPLAY_Init(0, BLACK);
-
 	SENSORS_Init();
 
 	while (1)
 	{
 		SENSORS_ReadTemperature(&temperature);
 		SENSORS_ReadHumidity(&humidity);
-		SENSORS_ReadLightLevel(&light_level);
 
-		if (light_level <= 300)
-		{
-			DISPLAY_InvertColors_OFF();
-		}
-		else
-		{
-			DISPLAY_InvertColors_ON();
-		}
+	SENSORS_ReadLightLevel(&light_level);
+
+	if (light_level <= 300)
+	{
+		DISPLAY_InvertColors_OFF();
+	}
+	else
+	{
+		DISPLAY_InvertColors_ON();
+	}
+
 
 		sprintf(output_str, "%d C", temperature);
 		DISPLAY_Text(20, 30, 8, output_str, fg_color, bg_color);
-
+		DISPLAY_DrawHLine(0, 110, 240, fg_color);
 		sprintf(output_str, "%d %%", humidity);
 		DISPLAY_Text(20, 140, 8, output_str, fg_color, bg_color);
+		DISPLAY_DrawHLine(0, 210, 240, fg_color);
 	}
 }

@@ -83,4 +83,14 @@ void DISPLAY_InvertColors_ON(void);
  */
 void DISPLAY_InvertColors_OFF(void);
 
+/**
+ * @brief Draw Horizontal Line
+ * 
+ * @param x - x coordinate
+ * @param y - y coordinate 
+ * @param w - line width
+ * @param color - line color
+ */
+void DISPLAY_DrawHLine(uint16_t x, uint16_t y, uint16_t w, uint16_t color);
+
 #endif // DISPLAY_H

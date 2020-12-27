@@ -30,10 +30,11 @@ hex:
 	avr-gcc -g -Os -mmcu=$(MCU) -c $(INC) $(SRC) $(CFLAGS)
 	avr-gcc -g -mmcu=$(MCU) -o $(BIN).elf $(OBJ)
 	avr-objcopy -j .text -j .data -O ihex $(BIN).elf $(BIN).hex
+	avr-size -C --mcu=${MCU} ${BIN}.elf
 
 clean:
 	rm -rf *.o *.elf *.hex
 
 program_flash:
 	avrdude $(AVRDUDE_FLAGS) -U flash:w:$(BIN).hex:i
-	putty -load AVR
+#	putty -load AVR
