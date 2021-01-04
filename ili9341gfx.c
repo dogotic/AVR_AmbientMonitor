@@ -75,6 +75,10 @@ void ili9341_drawchar(int16_t x, int16_t y, unsigned char c,uint16_t color, uint
 						data = pgm_read_byte(&letters[1][i+k]);					
 					else if (c == '%')
 						data = pgm_read_byte(&letters[2][i+k]);										
+					else if (c == 'h')
+						data = pgm_read_byte(&letters[3][i+k]);															
+					else if (c == 'P')
+						data = pgm_read_byte(&letters[4][i+k]);																				
 				}
 				
                 if (data & (1 << j))
