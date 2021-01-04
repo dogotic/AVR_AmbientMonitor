@@ -13,3 +13,4 @@ Compiler is AVR-GCC and firmware is developed using pure AVR-GCC (no arduino stu
 ## TO DO LIST
 - [ ] Add documentation in Doxygen format
 - [ ] Add System Block Schematic for HW and SW
+- [ ] Add Timer ISR to read LDR value and switch Color 
