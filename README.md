@@ -7,9 +7,9 @@ Compiler is AVR-GCC and firmware is developed using pure AVR-GCC (no arduino stu
 ## External Software used
 - DHT library - https://github.com/Jacajack/avr-dhtxx
 - ILI9341 library - https://gist.github.com/postmodern/ed6e670999f456ad9f13
+- BME280/BMP280 library - https://github.com/Sylaina/bme280
 
 
 ## TO DO LIST
-- [ ] Implement own I2C library and use bosch BMP280 library (preferably asynchronous)
 - [ ] Add documentation in Doxygen format
 - [ ] Add System Block Schematic for HW and SW
