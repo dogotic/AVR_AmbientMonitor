@@ -12,7 +12,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-#include "DHT/dht.h"
+#include "dht.h"
 #include "adc.h"
 #include "bme280.h"
 #include "sensors.h"
