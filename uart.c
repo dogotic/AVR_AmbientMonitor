@@ -13,12 +13,10 @@
 #include "uart.h"
 
 #define FOSC 8000000UL // Clock Speed
-#define BAUD 9600
-#define MYUBRR FOSC/16/BAUD-1
 
-void USART_Init(unsigned int ubrr)
+void USART_Init(unsigned int BaudRate)
 {
-    ubrr = MYUBRR;
+    uint16_t ubrr = (FOSC / 8 / BaudRate - 1) / 2;
 
     /*Set baud rate */
     UBRR0H = (unsigned char)(ubrr >> 8);

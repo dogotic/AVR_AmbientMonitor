@@ -14,16 +14,18 @@
 
 #include "DHT/dht.h"
 #include "adc.h"
-
+#include "bme280.h"
 #include "sensors.h"
 
 sensors_status_t SENSORS_Init()
 {
     ADC_Init();
 
+	// init sensor
+	bme280_init(0x1);
+
     return SENSORS_STATUS_OK;
 }
-
 
 sensors_status_t SENSORS_ReadHumidity(uint8_t *humidity)
 {
@@ -72,10 +74,17 @@ sensors_status_t SENSORS_ReadTemperature(int8_t *temperature)
     return SENSORS_STATUS_OK;
 }
 
-sensors_status_t SENSORS_ReadPressure(uint16_t *pressure)
+sensors_status_t SENSORS_ReadPressure(float *pressure)
 {
-    return SENSORS_STATUS_OK;
+    float t;
+    float p;
+    
+    t = bme280_readTemperature(0x1); // in °C
+    p = bme280_readPressure(0x1) / 100; // in mbar    
 
+    *pressure = p;
+
+    return SENSORS_STATUS_OK;
 }
 
 sensors_status_t SENSORS_ReadAltitude(uint16_t *altitude)

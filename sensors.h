@@ -78,7 +78,7 @@ sensors_status_t SENSORS_ReadTemperature(int8_t *temperature);
  *                          - SENSORS_STATUS_OK if reading was ok
  *                          - Currently no other error is reported
  */
-sensors_status_t SENSORS_ReadPressure(uint16_t *pressure);
+sensors_status_t SENSORS_ReadPressure(float *pressure);
 
 /**
  * @brief Function that returns calculated altitude from BMP280
